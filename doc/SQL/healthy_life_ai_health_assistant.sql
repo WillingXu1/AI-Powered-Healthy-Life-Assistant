@@ -5,7 +5,7 @@
  Source Server Type    : MySQL
  Source Server Version : 80043 (8.0.43)
  Source Host           : 127.0.0.1:3306
- Source Schema         : pig_health_smart_medicine
+ Source Schema         : HealthyLifeAiHealthAssistant
 
  Target Server Type    : MySQL
  Target Server Version : 80043 (8.0.43)
