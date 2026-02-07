@@ -497,7 +497,3 @@ knowledge:
 > **作者**: zxs
 > **邮箱**: 2571293150@qq.com  
 > **GitHub**: [[HealthyLife-AI-Health-Assistant](https://github.com/WillingXu1/HealthyLife-AI-Health-Assistant.git)]
-
-## 📈 Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=linyshdhhcb/PigHealthSmartMedicine&type=Date)](https://star-history.com/#linyshdhhcb/PigHealthSmartMedicine&Date)
