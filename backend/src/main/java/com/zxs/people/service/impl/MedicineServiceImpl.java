@@ -1,0 +1,84 @@
+package com.zxs.people.service.impl;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zxs.people.common.model.PageResult;
+import com.zxs.people.entity.Medicine;
+import com.zxs.people.entity.vo.medicine.MedicineAddVo;
+import com.zxs.people.entity.vo.medicine.MedicineQueryVo;
+import com.zxs.people.entity.vo.medicine.MedicineUpdateVo;
+import com.zxs.people.mapper.MedicineMapper;
+import com.zxs.people.service.MedicineService;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+
+/**
+* @Author: zxs
+* @Date: 2025-12-23 17:38:38
+* @ClassName: MedicineServiceImpl
+* @Version: 1.0
+* @Description: 药品 服务实现层
+*/
+@Slf4j
+@Service
+@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+@SuppressWarnings({"unchecked", "rawtypes"})
+public class MedicineServiceImpl extends ServiceImpl<MedicineMapper, Medicine> implements MedicineService {
+
+    @Autowired
+    private MedicineMapper medicineMapper;
+
+    @Override
+    public PageResult<Medicine> medicinePage(MedicineQueryVo medicineQueryVo) {
+        LambdaQueryWrapper<Medicine> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.like(StringUtils.isNotBlank(medicineQueryVo.getMedicineName()), Medicine::getMedicineName, medicineQueryVo.getMedicineName());
+        queryWrapper.like(StringUtils.isNotBlank(medicineQueryVo.getKeyword()), Medicine::getKeyword, medicineQueryVo.getKeyword());
+        queryWrapper.like(StringUtils.isNotBlank(medicineQueryVo.getMedicineEffect()), Medicine::getMedicineEffect, medicineQueryVo.getMedicineEffect());
+        queryWrapper.like(StringUtils.isNotBlank(medicineQueryVo.getMedicineBrand()), Medicine::getMedicineBrand, medicineQueryVo.getMedicineBrand());
+        queryWrapper.like(StringUtils.isNotBlank(medicineQueryVo.getInteraction()), Medicine::getInteraction, medicineQueryVo.getInteraction());
+        queryWrapper.like(StringUtils.isNotBlank(medicineQueryVo.getTaboo()), Medicine::getTaboo, medicineQueryVo.getTaboo());
+        queryWrapper.like(StringUtils.isNotBlank(medicineQueryVo.getUsAge()), Medicine::getUsAge, medicineQueryVo.getUsAge());
+        queryWrapper.like(Optional.ofNullable(medicineQueryVo.getMedicineType()).isPresent(), Medicine::getMedicineType, medicineQueryVo.getMedicineType());
+        queryWrapper.ge(Optional.ofNullable(medicineQueryVo.getMedicinePriceMin()).isPresent(), Medicine::getMedicinePrice, medicineQueryVo.getMedicinePriceMin());
+        queryWrapper.le(Optional.ofNullable(medicineQueryVo.getMedicinePriceMax()).isPresent(), Medicine::getMedicinePrice, medicineQueryVo.getMedicinePriceMax());
+        //分页数据
+        Page<Medicine> page = new Page<>(medicineQueryVo.getPageNum(),medicineQueryVo.getPageSize());
+        //查询数据
+        Page<Medicine> pageNew = medicineMapper.selectPage(page, queryWrapper);
+        //返回分页数据
+        return new PageResult<>(pageNew.getRecords(), pageNew.getTotal(), pageNew.getPages(), medicineQueryVo.getPageNum(), medicineQueryVo.getPageSize());
+    }
+
+    @Override
+    public Boolean medicineAdd(MedicineAddVo medicineAddVo){
+        //创建实体对象
+        Medicine medicine = new Medicine();
+        //复制属性
+        BeanUtils.copyProperties(medicineAddVo, medicine);
+        //插入数据
+        return medicineMapper.insert(medicine) > 0 ? true : false;
+    }
+
+    @Override
+    public Boolean medicineUpdate(MedicineUpdateVo medicineUpdateVo){
+        //根据ID查询数据
+        Medicine byId=this.getById(medicineUpdateVo.getId());
+        //判断数据是否存在
+        if(Optional.ofNullable(byId).isEmpty()){
+            log.error("数据不存在");
+            return false;
+        }
+        //复制属性
+        BeanUtils.copyProperties(medicineUpdateVo, byId);
+        //修改数据
+        return medicineMapper.updateById(byId) > 0 ? true : false;
+    }
+}
