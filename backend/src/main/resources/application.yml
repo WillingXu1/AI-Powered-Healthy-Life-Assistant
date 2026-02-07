@@ -1,0 +1,199 @@
+app:
+  ollama:
+    timeout:
+      retrieval: 5       # 向量检索超时5秒
+      inference: 30      # 模型推理超时30秒
+    limits:
+      context-chars: 800      # 上下文最大800字符
+      similarity-results: 3   # 只取前3个相似结果
+      max-prompt-length: 1500 # 总prompt限制
+    fallback:
+      enabled: true
+      message: "系统处理中，请稍后查看结果"
+
+server:
+  port: 9999
+spring:
+  ai:
+    ollama:
+      base-url: http://localhost:11434
+
+      # Chat模型配置
+      chat:
+        options:
+          model: qwen2.5:0.5b  # 此电脑只能使用0.5b的模型！！！！！
+          temperature: 0.8
+          num-predict: 512
+          num-batch: 16
+          num-ctx: 4096
+          top-p: 0.9
+          top-k: 40
+          num-thread: 6
+          repeat-last-n: 64
+          repeat-penalty: 1.1
+          mirostat: 2
+
+      # Embedding模型配置
+      embedding:
+        options:
+          model: nomic-embed-text:latest
+        # Embedding专用的超时设置
+        client:
+          connect-timeout: 30s
+          read-timeout: 120s
+
+      # 全局超时设置（对chat和embedding都有效）
+      client:
+        connect-timeout: 50s
+        read-timeout: 500s
+        response-timeout: 500s
+
+
+
+  application:
+    name: "Healthy Life AI Health Assistant"
+    description: "健康人生AI健康助手"
+  # 数据源配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/healthy_life_ai_health_assistant?serverTimezone=Hongkong&useAffectedRows=true&characterEncoding=utf-8
+    username: root               #数据库用户名
+    password: 123456               #数据库密码
+    type: com.alibaba.druid.pool.DruidDataSource
+    initialSize: 5 # 初始化时创建的连接数
+    minIdle: 5 # 最小空闲连接数
+    maxActive: 20 # 最大活跃连接数
+    testWhileIdle: true # 是否在空闲时测试连接的有效性
+    validationQuery: SELECT 1 FROM DUAL # 验证连接的查询语句
+    timeBetweenEvictionRunsMillis: 60000 # 检查连接是否空闲的时间间隔
+    minEvictableIdleTimeMillis: 300000 # 连接在池中最小生存时间
+
+  # JPA配置
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update  # 开发环境用update，生产用validate
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+    open-in-view: false
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  # 邮件配置
+  mail:
+    username: 2571293150@qq.com # qq邮箱
+    password: soivgbrhldmteaia # qq邮箱授权码
+    host: smtp.qq.com
+    port: 465
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          socketFactory:
+            port: 465
+            class: javax.net.ssl.SSLSocketFactory
+            fallback: false
+    valid: 30
+    title: "健康人生AI健康助手 - 用户认证"
+    template: "您的动态验证码为：<strong style='color: red'>%s</strong>，%d分钟内有效，若非本人操作，请勿泄露。"
+  data:
+    redis:
+      host: 192.168.175.128
+      port: 6379
+      password: 123321
+      timeout: 3000
+      database: 0
+      pool:
+        max-active: 100
+        max-idle: 10
+        max-wait: -1ms
+        min-idle: 0
+
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+  #minio配置
+  # minio是一个数据库，专门存储文件的
+  minio:
+    access-key: minioadmin
+    secret-key: minioadmin
+    url: http://192.168.175.130:9000 # 主ip
+    bucket-name: health
+# 其实现在药物的图片是通过阿里云的oss来存储和获取的
+# 但是不运行minio会导致项目无法启动
+
+knowledge:
+  storage:
+  # 可选：配置知识库存储根目录（绝对路径或相对运行目录）
+  # 不配置时默认使用项目路径 backend/src/main/resources/knowledge
+   root: D:\A_Studying\StudyForWork\work_12_18\HealthyLifeAiHealthAssistant-master\backend\src\main\resources\knowledge
+
+# mybatis-plus配置
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+  # sa-token配置
+  sa-token:
+    # token名称 (同时也是cookie名称)
+    token-name: satoken
+    # token有效期，单位s 默认30天, -1代表永不过期
+    timeout: 2592000
+    # token临时有效期 (指定时间内无操作就视为token过期) 单位: 秒
+    activity-timeout: -1
+    # 是否允许同一账号并发登录 (为true时允许一起登录, 为false时新登录挤掉旧登录)
+    allow-concurrent-login: true
+    # 在多人登录同一账号时，是否共用一个token (为true时所有登录共用一个token, 为false时每次登录新建一个token)
+    is-share: false
+    # token风格
+    token-style: uuid
+    # 是否输出日志
+    is-log: true
+
+# 日志配置
+logging:
+  level:
+    world.world.xuewei.dao.mapper: debug
+# springdoc-openapi项目配置
+
+#  SpringDoc：自动扫描代码，生成OpenAPI规范
+#  OpenAPI：文档标准格式（JSON）
+#  Knife4j：美化界面，让文档更好看
+springdoc:
+  version: 1.0.0
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: "default"
+      paths-to-match: "/**"
+      packages-to-scan: com.zz.health.controller
+# knife4j的增强配置，不需要增强可以不配
+knife4j:
+  enable: true
+  api:
+    title: "健康人生AI健康助手 API 文档"
+    description: "基于Spring boot3+Spring AI的健康资讯与咨询的智能系统的API文档"
+    version: 1.0.0
+    contact:
+      name: zxs
+      email: 2571293150@qq.com
+    license:
+      name: MIT
+      url: https://github.com/WillingXu1/HealthyLife-AI-Health-Assistant/blob/main/LICENSE
+  setting:
+    language: zh_cn
+
+
+
