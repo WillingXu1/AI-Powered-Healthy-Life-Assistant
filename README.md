@@ -488,7 +488,7 @@ knowledge:
 
 ## 许可证
 
-本项目采用 MIT 许可证 [LICENSE](https://github.com/WillingXu1/HealthyLifeAiHealthAssistant/blob/18e77ef9ae85006f1f569dde82fcdf1102e2894e/LICENSE.md)。
+本项目采用 MIT 许可证 [LICENSE](https://github.com/WillingXu1/AI-Powered-Healthy-Life-Assistant/blob/18e77ef9ae85006f1f569dde82fcdf1102e2894e/LICENSE.md)。
 
 ---
 
@@ -496,7 +496,7 @@ knowledge:
 
 > **作者**: zxs
 > **邮箱**: 2571293150@qq.com  
-> **GitHub**: [[HealthyLife-AI-Health-Assistant](https://github.com/WillingXu1/HealthyLife-AI-Health-Assistant.git)]
+> **GitHub**: [[Smart Health](https://github.com/WillingXu1/AI-Powered-Healthy-Life-Assistant.git)]
 
 
 
