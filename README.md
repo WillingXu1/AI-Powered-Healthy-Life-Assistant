@@ -12,7 +12,7 @@
 
 - **后端框架**：SpringBoot 3.3.5、Spring AI、MyBatis Plus
 - **前端框架**：Vue3、JavaScript、Vite、Pinia
-- **AI模型**：Ollama + DeepSeek
+- **AI模型**：Ollama + Qwen2.5
 - **数据库**：MySQL 8.0.33
 - **缓存系统**：Redis
 - **安全框架**：SaToken
